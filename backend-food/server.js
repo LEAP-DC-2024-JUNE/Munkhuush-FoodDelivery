@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+
+dotenv.config();
 import express from "express";
 import connectDB from "./config/db.js";
 import foodRoutes from "./routes/foodRoutes.js";
@@ -6,15 +9,14 @@ import userRoutes from "./routes/userRoutes.js";
 import foodOrderRoutes from "./routes/foodOrderRoutes.js";
 import foodOrderItemRoutes from "./routes/foodOrderItemRoutes.js";
 import cors from "cors";
-import dotenv from "dotenv";
 
-dotenv.config();
 const app = express();
 const PORT = 3001;
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
 // Connect to MongoDB
 connectDB();
