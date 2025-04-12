@@ -15,13 +15,7 @@ interface FoodCategory {
 
 export default function GroupedCategories() {
   const [foodCategories, setFoodCategories] = useState<FoodCategory[]>([]);
-  //   const [newFood, setNewFood] = useState({
-  //     foodName: "",
-  //     price: "",
-  //     image: "",
-  //     ingredients: "",
-  //     category: "",
-  //   });
+
   const [newFood, setNewFood] = useState<{ [key: string]: any }>({});
 
   useEffect(() => {
@@ -41,13 +35,45 @@ export default function GroupedCategories() {
     fetchData();
   }, []);
 
+  const handleFile = (e) => {
+    console.log(e);
+
+    setNewFood({ ...newFood, image: e.target.files[0] });
+  };
+  console.log(newFood);
+
+  const uploadImage = async () => {
+    const UPLOAD_PRESET = "food_preset";
+    const CLOUD_NAME = "dyih7skpb";
+    const newFormData = new FormData();
+    newFormData.append("file", newFood.image);
+    newFormData.append("upload_preset", UPLOAD_PRESET);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      { method: "POST", body: newFormData }
+    );
+    const result = await response.json();
+    return result.secure_url;
+  };
+
   const handleAddFood = async (categoryId: string) => {
-    const newAddedFood = newFood[categoryId];
+    const imageUrl = await uploadImage();
+    if (!newFood?.foodName || !newFood.price || !newFood.image) {
+      alert("Please fill all fields and upload an image.");
+      return;
+    }
+    console.log(imageUrl);
+
     console.log("daragdlaa");
     const res = await fetch("http://localhost:3001/api/foods", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...newAddedFood, category: categoryId }),
+      body: JSON.stringify({
+        ...newFood,
+        category: categoryId,
+        image: imageUrl,
+      }),
     });
   };
 
@@ -58,10 +84,7 @@ export default function GroupedCategories() {
     const { name, value } = e.target;
     setNewFood((prev) => ({
       ...prev,
-      [categoryId]: {
-        ...prev[categoryId],
-        [name]: name === "price" ? Number(value) || "" : value,
-      },
+      [name]: name === "price" ? Number(value) || "" : value,
     }));
   };
   return (
@@ -86,7 +109,7 @@ export default function GroupedCategories() {
                   className="border"
                   type="text"
                   placeholder="Food Name"
-                  value={newFood[category._id]?.foodName || ""}
+                  value={newFood.foodName}
                   onChange={(e) => handleChange(e, category._id)}
                   name="foodName"
                 />
@@ -94,16 +117,15 @@ export default function GroupedCategories() {
                   className="border"
                   type="text"
                   placeholder="Price"
-                  value={newFood[category._id]?.price || ""}
+                  value={newFood.price}
                   onChange={(e) => handleChange(e, category._id)}
                   name="price"
                 />
                 <input
                   className="border"
-                  type="text "
+                  type="file"
                   placeholder="Image url"
-                  value={newFood[category._id]?.image || ""}
-                  onChange={(e) => handleChange(e, category._id)}
+                  onChange={(e) => handleFile(e)}
                   name="image"
                 />
                 <input
@@ -111,17 +133,17 @@ export default function GroupedCategories() {
                   type="text"
                   placeholder="Ingredients"
                   name="ingredients"
-                  value={newFood[category._id]?.ingredients || ""}
+                  value={newFood.ingredients}
                   onChange={(e) => handleChange(e, category._id)}
                 />
-                <input
+                {/* <input
                   className="border"
                   type="text"
                   placeholder="Category"
                   name="category"
                   value={category._id}
                   onChange={(e) => handleChange(e, category._id)}
-                />
+                /> */}
                 <button
                   onClick={() => handleAddFood(category._id)}
                   className="bg-green-400 px-2 rounded-xl text-white"

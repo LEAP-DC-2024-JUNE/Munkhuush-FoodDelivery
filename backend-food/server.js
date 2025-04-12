@@ -8,6 +8,7 @@ import foodCategoryRoutes from "./routes/foodCategoryRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import foodOrderRoutes from "./routes/foodOrderRoutes.js";
 import foodOrderItemRoutes from "./routes/foodOrderItemRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/food-categories", foodCategoryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/food-orders", foodOrderRoutes);
 app.use("/api/food-order-items", foodOrderItemRoutes);
+app.use("/api/food-delivery", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

@@ -6,17 +6,16 @@ const FoodOrderStatusEnum = {
   DELIVERED: "DELIVERED",
 };
 
+const foodOrderItemSchema = new mongoose.Schema({
+  food: { type: mongoose.Schema.Types.ObjectId, ref: "Food", required: true },
+  quantity: { type: Number, required: true, min: 1 },
+});
+
 const foodOrderSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     totalPrice: { type: Number, required: true, min: 0 },
-    foodOrderItems: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "FoodOrderItem",
-        required: true,
-      },
-    ],
+    foodOrderItems: { type: [foodOrderItemSchema], required: true },
     status: {
       type: String,
       enum: Object.values(FoodOrderStatusEnum),

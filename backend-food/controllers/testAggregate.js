@@ -1,4 +1,3 @@
-import FoodCategory from "../models/foodCategoryModel.js";
 import Food from "../models/foodModel.js";
 
 export const testAggregate = async (request, response) => {
@@ -24,6 +23,8 @@ export const testAggregate = async (request, response) => {
               _id: "$_id",
               foodName: "$foodName",
               price: "$price",
+              ingredients: "$ingredients",
+              image: "$image",
             },
           },
         },
@@ -36,24 +37,3 @@ export const testAggregate = async (request, response) => {
     response.status(500).json({ error: error.message });
   }
 };
-
-// export const testAggregate2 = async (req, res) => {
-//   try {
-//     const groupedFood = await Food.aggregate([
-//       {
-//         $group: {
-//           _id: "category",
-//           foods: { $push: "$$ROOT" },
-//         },
-//       },
-//     ]);
-//     const result = await FoodCategory.populate(groupedFood, {
-//       path: "_id",
-//       select: "categoryName",
-//     });
-
-//     response.status(200).json(result);
-//   } catch (error) {
-//     response.status(404).json(error);
-//   }
-// };
