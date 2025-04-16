@@ -40,7 +40,7 @@ export function AdminAddFood({
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -68,6 +68,8 @@ export function AdminAddFood({
   };
 
   const handleAddFood = async (categoryId: string) => {
+    if (isSubmitting) return; // Prevent multiple rapid submissions
+    setIsSubmitting(true);
     const imageUrl = await uploadImage();
     if (!newFood?.foodName || !newFood.price || !newFood.image) {
       alert("Please fill all fields and upload an image.");
@@ -87,9 +89,10 @@ export function AdminAddFood({
     });
     if (res.ok) {
       toast("New dish is being added to the menu");
+      setOpen(false);
+      setIsOpen(!isOpen);
     }
-    setOpen(false);
-    setIsOpen(!isOpen);
+    setIsSubmitting(false);
   };
 
   const handleChange = (
@@ -174,7 +177,12 @@ export function AdminAddFood({
           )}
         </div>
         <DialogFooter>
-          <Button onClick={() => handleAddFood(categoryId)}>Save food</Button>
+          <Button
+            onClick={() => handleAddFood(categoryId)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Adding..." : "Add Food"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -13,9 +13,12 @@ import {
 import { useEffect, useState } from "react";
 import { CartCardsContainer } from "./CartCardsContainer";
 import { CheckoutSection } from "./CheckoutSection";
+import { CartOrderHistoryContainer } from "./CartOrderHistoryContainer";
 
 export function CartSheet() {
   const [storedFood, setStoredFood] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   // const [isOpen, setisOpen] = useState(false);
   // useEffect(() => {
   //   const getCartItems = () => {
@@ -30,7 +33,9 @@ export function CartSheet() {
 
   return (
     <Sheet
+      open={isOpen}
       onOpenChange={(open) => {
+        setIsOpen(open);
         if (open) {
           const response = JSON.parse(localStorage.getItem("food")) || [];
           setStoredFood(response);
@@ -50,18 +55,33 @@ export function CartSheet() {
           </SheetTitle>
 
           <div className="w-[471px] h-[44px] bg-white rounded-full flex justify-center items-center gap-2">
-            <button className="w-[227.5px] h-9 rounded-full bg-red-500 text-white text-[18px]">
+            <button
+              onClick={() => setIsClicked(false)}
+              className={`w-[227.5px] h-9 rounded-full text-[18px] ${
+                isClicked ? "bg-white text-black" : "bg-red-500 text-white"
+              }`}
+            >
               Cart
             </button>
-            <button className="w-[227.5px] h-9 rounded-full text-[18px]">
+            <button
+              onClick={() => setIsClicked(true)}
+              className={`w-[227.5px] h-9 rounded-full text-[18px] ${
+                isClicked ? "bg-red-500 text-white" : "bg-white text-black"
+              }`}
+            >
               Order
             </button>
           </div>
         </SheetHeader>
-        <CartCardsContainer
-          storedFood={storedFood}
-          setStoredFood={setStoredFood}
-        />
+        {!isClicked ? (
+          <CartCardsContainer
+            storedFood={storedFood}
+            setStoredFood={setStoredFood}
+            closeSheet={() => setIsOpen(false)}
+          />
+        ) : (
+          <CartOrderHistoryContainer closeSheet={() => setIsOpen(false)} />
+        )}
         <SheetFooter className="p-0">
           <SheetClose asChild>
             <CheckoutSection

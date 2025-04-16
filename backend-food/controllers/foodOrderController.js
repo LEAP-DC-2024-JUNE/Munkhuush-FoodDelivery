@@ -23,9 +23,28 @@ export const getFoodOrders = async (req, res) => {
       .populate("user")
       .populate({
         path: "foodOrderItems",
-        populate: { path: "food", select: "foodName price" }, // Populate food details inside foodOrderItems
-      });
-    res.status(200).json(orders);
+        populate: { path: "food", select: "foodName price image" }, // Populate food details inside foodOrderItems
+      })
+      .lean();
+    const flattenedOrders = orders.map((order) => ({
+      _id: order._id,
+      userId: order.user?._id,
+      userEmail: order.user?.email,
+      userRole: order.user?.role,
+      status: order.status,
+      userAddress: order.user?.address,
+      userPhone: order.user?.phoneNumber,
+      totalPrice: order.totalPrice,
+      createdAt: order.createdAt,
+      foodOrderItems: order.foodOrderItems.map((item) => ({
+        foodName: item.food?.foodName,
+        price: item.food?.price,
+        quantity: item.quantity,
+        image: item.food?.image,
+        foodId: item.food?._id,
+      })),
+    }));
+    res.status(200).json(flattenedOrders);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch orders." });
   }
