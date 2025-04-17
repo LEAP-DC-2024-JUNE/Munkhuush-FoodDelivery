@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Image from "next/image";
 import { useState } from "react";
 
 type foodType = {
@@ -19,7 +18,10 @@ type foodType = {
   ingredients: string;
   image: string;
 };
-
+type CartItemType = foodType & {
+  quantity: number;
+  totalPrice: number;
+};
 type CardPropsType = {
   data: foodType;
 };
@@ -43,10 +45,7 @@ export function DialogCard({ data }: CardPropsType) {
 
     try {
       const storedData = localStorage.getItem("food");
-      const cart = Array.isArray(JSON.parse(storedData))
-        ? JSON.parse(storedData)
-        : [];
-
+      const cart: CartItemType[] = storedData ? JSON.parse(storedData) : [];
       const itemIndex = cart.findIndex((item) => item._id === data._id);
 
       if (itemIndex !== -1) {

@@ -14,11 +14,20 @@ import { useEffect, useState } from "react";
 import { CartCardsContainer } from "./CartCardsContainer";
 import { CheckoutSection } from "./CheckoutSection";
 import { CartOrderHistoryContainer } from "./CartOrderHistoryContainer";
+interface FoodItem {
+  _id: string;
+  foodName: string;
+  price: number;
+  ingredients: string;
+  image: string;
+  quantity: number;
+  totalPrice: number;
+}
 
 export function CartSheet() {
-  const [storedFood, setStoredFood] = useState([]);
-  const [isClicked, setIsClicked] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [storedFood, setStoredFood] = useState<FoodItem[]>([]);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   // const [isOpen, setisOpen] = useState(false);
   // useEffect(() => {
   //   const getCartItems = () => {
@@ -37,7 +46,7 @@ export function CartSheet() {
       onOpenChange={(open) => {
         setIsOpen(open);
         if (open) {
-          const response = JSON.parse(localStorage.getItem("food")) || [];
+          const response = JSON.parse(localStorage.getItem("food") || "[]");
           setStoredFood(response);
         }
       }}

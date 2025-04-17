@@ -1,6 +1,25 @@
 import { useState } from "react";
+interface CartFoodItem {
+  _id: string;
+  foodName: string;
+  price: number;
+  image: string;
+  ingredients: string;
+  quantity: number;
+  totalPrice: number;
+}
 
-export const CartCard = ({ foodDetails, setStoredFood, storedFood }) => {
+interface CartCardProps {
+  foodDetails: CartFoodItem;
+  storedFood: CartFoodItem[];
+  setStoredFood: React.Dispatch<React.SetStateAction<CartFoodItem[]>>;
+}
+
+export const CartCard = ({
+  foodDetails,
+  setStoredFood,
+  storedFood,
+}: CartCardProps) => {
   const [quantity, setQuantity] = useState(foodDetails.quantity);
   const [totalPrice, setTotalPrice] = useState(foodDetails.totalPrice);
   const itemIndex = storedFood.findIndex((item) => item._id == foodDetails._id);
@@ -41,7 +60,7 @@ export const CartCard = ({ foodDetails, setStoredFood, storedFood }) => {
     setStoredFood(updatedStoredFood);
   };
 
-  const handleRemoveItem = (id) => {
+  const handleRemoveItem = (id: any) => {
     const updatedFood = storedFood.filter((food) => food._id !== id);
     setStoredFood(updatedFood);
     localStorage.setItem("food", JSON.stringify(updatedFood));

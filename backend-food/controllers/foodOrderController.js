@@ -20,6 +20,7 @@ export const createFoodOrder = async (req, res) => {
 export const getFoodOrders = async (req, res) => {
   try {
     const orders = await FoodOrder.find()
+      .sort({ createdAt: -1 })
       .populate("user")
       .populate({
         path: "foodOrderItems",

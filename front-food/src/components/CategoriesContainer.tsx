@@ -24,7 +24,7 @@ export const CategoriesContainer = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/food-categories"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories`
         );
         const data: FoodCategory[] = await response.json();
         setFoodCategories(data);

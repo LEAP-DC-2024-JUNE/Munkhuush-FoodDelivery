@@ -7,7 +7,6 @@ import { toast } from "sonner";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 export const SignUp = () => {
   const router = useRouter();
@@ -15,7 +14,7 @@ export const SignUp = () => {
     email: Yup.string().required("email is required").email(),
     password: Yup.string().required("Password is required"),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .oneOf([Yup.ref("password"), undefined], "Passwords must match")
       .required("Please confirm your password"),
     phoneNumber: Yup.string().required("Phone number is required"),
     address: Yup.string().required("Address is required"),
@@ -38,7 +37,7 @@ export const SignUp = () => {
         signup(signupData);
         toast("New account has been created ");
         router.push("/login");
-      } catch (error) {
+      } catch (error: any) {
         alert("Signup failed:" + error.message);
       }
     },

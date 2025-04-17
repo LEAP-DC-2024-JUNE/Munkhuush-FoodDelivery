@@ -1,6 +1,15 @@
 import { checkoutOrder } from "@/utils/apiService";
 import { jwtDecode } from "jwt-decode";
-export const CheckoutSection = ({ storedFood, setStoredFood }) => {
+import type { StoredFoodItem } from "@/utils/types";
+interface CheckoutSectionProps {
+  storedFood: StoredFoodItem[];
+  setStoredFood: (items: StoredFoodItem[]) => void;
+}
+
+export const CheckoutSection = ({
+  storedFood,
+  setStoredFood,
+}: CheckoutSectionProps) => {
   const totalPrice =
     storedFood.reduce((acc, item) => acc + item.totalPrice, 0) + 0.99;
   const itemQuantities = storedFood.reduce(
@@ -15,7 +24,11 @@ export const CheckoutSection = ({ storedFood, setStoredFood }) => {
         alert("You must be logged in to checkout.");
         return;
       }
-      const userData = jwtDecode(token);
+      interface MyJwtPayload {
+        id: string;
+        // Add more fields here if your token includes more
+      }
+      const userData = jwtDecode<MyJwtPayload>(token);
       console.log(userData.id);
       const userId = userData.id;
 
@@ -24,7 +37,7 @@ export const CheckoutSection = ({ storedFood, setStoredFood }) => {
       alert("Order placed successfully!");
       setStoredFood([]);
       localStorage.removeItem("food");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Checkout error:", error);
       alert("Checkout failed: " + error.message);
     }

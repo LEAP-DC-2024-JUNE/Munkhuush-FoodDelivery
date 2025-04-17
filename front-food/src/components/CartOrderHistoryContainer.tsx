@@ -3,13 +3,30 @@ import { useEffect, useState } from "react";
 import { CartOrderHistoryCard } from "./CartOrderHistoryCard";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+interface FoodOrderItem {
+  foodId: string;
+  foodName: string;
+  quantity: number;
+}
+
+interface OrderedFood {
+  _id: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+  userAddress: string;
+  userId: string;
+  foodOrderItems: FoodOrderItem[];
+}
+
+interface CartOrderHistoryContainerProps {
+  closeSheet: () => void;
+}
 
 export const CartOrderHistoryContainer = ({
   closeSheet,
-}: {
-  closeSheet: () => void;
-}) => {
-  const [orderedFood, setOrderedFood] = useState([]);
+}: CartOrderHistoryContainerProps) => {
+  const [orderedFood, setOrderedFood] = useState<OrderedFood[]>([]);
   const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
@@ -19,10 +36,12 @@ export const CartOrderHistoryContainer = ({
           console.warn("No token found in localStorage");
           return;
         }
-        const decoded: any = jwtDecode(token);
+        const decoded = jwtDecode<{ id: string }>(token);
         console.log(decoded);
-        const response = await fetch("http://localhost:3001/api/food-orders");
-        const data = await response.json();
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders`
+        );
+        const data: OrderedFood[] = await response.json();
         const filteredData = data.filter((food) => food.userId === decoded.id);
         setOrderedFood(filteredData);
         console.log(filteredData);

@@ -12,9 +12,15 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
 
+type FoodItem = {
+  _id: string;
+  foodName: string;
+  price: number;
+};
 type Category = {
   _id: string;
   categoryName: string;
+  foods: FoodItem[];
 };
 
 type AdminAddCategoryProps = {
@@ -31,11 +37,14 @@ export function AdminAddCategory({
   const handleAddCategory = async () => {
     toast("New category is being added to the menu.");
 
-    const res = await fetch("http://localhost:3001/api/food-categories", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ categoryName: newCategory }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categoryName: newCategory }),
+      }
+    );
 
     const addedCategory = await res.json();
     setFoodCategories([...foodCategories, addedCategory]);

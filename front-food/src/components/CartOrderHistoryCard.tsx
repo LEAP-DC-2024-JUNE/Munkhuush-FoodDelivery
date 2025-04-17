@@ -1,4 +1,24 @@
-export const CartOrderHistoryCard = ({ orderedFood }) => {
+interface FoodOrderItem {
+  foodId: string;
+  foodName: string;
+  quantity: number;
+}
+
+interface OrderedFood {
+  _id: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+  userAddress: string;
+  foodOrderItems: FoodOrderItem[];
+}
+
+interface CartOrderHistoryCardProps {
+  orderedFood: OrderedFood;
+}
+export const CartOrderHistoryCard = ({
+  orderedFood,
+}: CartOrderHistoryCardProps) => {
   return (
     <div className="flex flex-col gap-3 px-3">
       <div className="flex justify-between">

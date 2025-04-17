@@ -1,15 +1,26 @@
 import { useRouter } from "next/navigation";
 import { CartCard } from "./CartCard";
+interface CartFoodItem {
+  _id: string;
+  foodName: string;
+  price: number;
+  image: string;
+  ingredients: string;
+  quantity: number;
+  totalPrice: number;
+}
+
+interface CartCardsContainerProps {
+  storedFood: CartFoodItem[];
+  setStoredFood: React.Dispatch<React.SetStateAction<CartFoodItem[]>>;
+  closeSheet: () => void;
+}
 
 export const CartCardsContainer = ({
   storedFood,
   setStoredFood,
   closeSheet,
-}: {
-  storedFood: any[]; // You can replace `any` with a specific type if you have one
-  setStoredFood: (food: any[]) => void;
-  closeSheet: () => void;
-}) => {
+}: CartCardsContainerProps) => {
   const router = useRouter();
   const handleAddFood = () => {
     closeSheet();

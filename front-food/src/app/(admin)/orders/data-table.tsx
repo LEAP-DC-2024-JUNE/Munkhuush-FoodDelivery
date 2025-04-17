@@ -30,6 +30,21 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+type FoodOrderItem = {
+  foodName: string;
+  price: number;
+  quantity: number;
+  image: string;
+  foodId: string;
+};
+
+type Order = {
+  _id: string;
+  userId: string;
+  totalPrice: number;
+  createdAt: string;
+  foodOrderItems: FoodOrderItem[];
+};
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -67,7 +82,10 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const items = data.reduce((acc, item) => acc + item.foodOrderItems.length, 0);
+  const items = (data as Order[]).reduce(
+    (acc, item) => acc + item.foodOrderItems.length,
+    0
+  );
 
   return (
     <div className="w-full pt-6 pl-6 pr-10 flex flex-col gap-6">

@@ -22,7 +22,7 @@ export default function GroupedCategories() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/food-categories/test-aggregate"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate`
         );
         const data: FoodCategory[] = await response.json();
         setFoodCategories(data);
@@ -35,11 +35,13 @@ export default function GroupedCategories() {
     fetchData();
   }, []);
 
-  const handleFile = (e) => {
-    console.log(e);
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
 
+    console.log(e);
     setNewFood({ ...newFood, image: e.target.files[0] });
   };
+
   console.log(newFood);
 
   const uploadImage = async () => {
@@ -66,7 +68,7 @@ export default function GroupedCategories() {
     console.log(imageUrl);
 
     console.log("daragdlaa");
-    const res = await fetch("http://localhost:3001/api/foods", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/foods`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -136,14 +138,6 @@ export default function GroupedCategories() {
                   value={newFood.ingredients}
                   onChange={(e) => handleChange(e, category._id)}
                 />
-                {/* <input
-                  className="border"
-                  type="text"
-                  placeholder="Category"
-                  name="category"
-                  value={category._id}
-                  onChange={(e) => handleChange(e, category._id)}
-                /> */}
                 <button
                   onClick={() => handleAddFood(category._id)}
                   className="bg-green-400 px-2 rounded-xl text-white"

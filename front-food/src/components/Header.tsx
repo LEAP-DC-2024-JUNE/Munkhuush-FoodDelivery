@@ -10,7 +10,6 @@ export const Header = () => {
   const [userData, setUserData] = useState<string | null>(null);
   const router = useRouter();
 
-  // Safely access localStorage and decode token
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -53,7 +52,6 @@ export const Header = () => {
           </div>
         </div>
         <div>
-          {/* <Image src="./icons/cart.svg" alt="" width={36} height={36} /> */}
           <CartSheet />
         </div>
         <div className="relative">

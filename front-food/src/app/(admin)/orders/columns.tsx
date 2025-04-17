@@ -162,11 +162,14 @@ export const columns: ColumnDef<FoodOrder>[] = [
 
       const updateStatus = async (newStatus: string) => {
         try {
-          await fetch(`http://localhost:3001/api/food-orders/${orderId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: newStatus }),
-          });
+          await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders/${orderId}`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ status: newStatus }),
+            }
+          );
           // Optionally: show toast, refresh table, etc.
         } catch (error) {
           console.error("Failed to update status", error);

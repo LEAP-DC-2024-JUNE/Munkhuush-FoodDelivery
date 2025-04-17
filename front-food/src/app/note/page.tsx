@@ -2,6 +2,7 @@
 import AdminCategories from "@/components/AdminCategories";
 import { AdminFoodMenu } from "@/components/AdminFoodMenu";
 import { AdminSideBar } from "@/components/AdminSideBar";
+import GroupedCategories from "@/components/GroupedCategories";
 import { useEffect, useState } from "react";
 
 interface FoodItem {
@@ -23,7 +24,7 @@ export default function Note() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/food-categories/test-aggregate"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate`
         );
         const data: FoodCategory[] = await response.json();
         setFoodCategories(data);
@@ -58,11 +59,11 @@ export default function Note() {
           <p>Loading categories...</p>
         )}
       </div> */}
-      <AdminSideBar />
+      {/* <AdminSideBar />
       <div>
         <AdminCategories />
         <AdminFoodMenu />
-      </div>
+      </div> */}
     </div>
   );
 }

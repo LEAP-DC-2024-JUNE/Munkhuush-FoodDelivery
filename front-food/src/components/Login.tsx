@@ -8,6 +8,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
+type DecodedToken = {
+  id: string;
+  email: string;
+  role: "USER" | "ADMIN";
+  // add any other properties your token includes
+};
 export const Login = () => {
   const router = useRouter();
   const validationSchema = Yup.object({
@@ -26,14 +32,14 @@ export const Login = () => {
         localStorage.setItem("token", data.token);
         console.log("JWT token saved:", data.token);
 
-        const decoded = jwtDecode(data.token);
+        const decoded = jwtDecode<DecodedToken>(data.token);
         console.log("Decoded JWT", decoded);
         if (decoded.role === "USER") {
           router.push("/");
         } else if (decoded.role === "ADMIN") {
           router.push("/food-menu");
         }
-      } catch (error) {
+      } catch (error: any) {
         alert("Login failed: " + error.message);
       }
     },

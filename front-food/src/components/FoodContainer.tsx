@@ -24,7 +24,7 @@ export const Foodcontainer = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/food-categories/test-aggregate"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate`
         );
         const data: FoodCategory[] = await response.json();
         setFoodCategories(data.slice(0, 3));

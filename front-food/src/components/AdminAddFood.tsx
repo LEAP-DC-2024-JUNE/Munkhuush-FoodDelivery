@@ -14,7 +14,7 @@ type AdminAddFoodProps = {
   categoryId: string;
   categoryName: string;
   isOpen: boolean;
-  setIsOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type NewFood = {
@@ -78,7 +78,7 @@ export function AdminAddFood({
     console.log(imageUrl);
 
     console.log("daragdlaa");
-    const res = await fetch("http://localhost:3001/api/foods", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/foods`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
