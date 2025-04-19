@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type foodType = {
   _id: any;
@@ -29,6 +30,7 @@ type CardPropsType = {
 export function DialogCard({ data }: CardPropsType) {
   const [count, setCount] = useState(1);
   const [totalPrice, setTotalPrice] = useState(data.price);
+  const [open, setOpen] = useState(false);
   const handlePlus = () => {
     setTotalPrice(data.price * (count + 1));
     setCount(count + 1);
@@ -54,16 +56,21 @@ export function DialogCard({ data }: CardPropsType) {
       } else {
         cart.push({ ...data, quantity: count, totalPrice });
       }
+      toast(`${data.foodName} x${count} added successfully!`);
 
       localStorage.setItem("food", JSON.stringify(cart));
       console.log("Cart updated:", cart);
+      setOpen(false);
+      setCount(1);
+      setTotalPrice(data.price);
     } catch (error) {
       console.error("Error updating cart:", error);
+      toast("Something went wrong while adding to cart.");
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <img src="./icons/plus.svg" alt="" />
       </DialogTrigger>

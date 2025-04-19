@@ -4,11 +4,13 @@ import type { StoredFoodItem } from "@/utils/types";
 interface CheckoutSectionProps {
   storedFood: StoredFoodItem[];
   setStoredFood: (items: StoredFoodItem[]) => void;
+  onCheckoutSuccess: () => void; // ✅ callback
 }
 
 export const CheckoutSection = ({
   storedFood,
   setStoredFood,
+  onCheckoutSuccess,
 }: CheckoutSectionProps) => {
   const totalPrice =
     storedFood.reduce((acc, item) => acc + item.totalPrice, 0) + 0.99;
@@ -26,7 +28,9 @@ export const CheckoutSection = ({
       }
       interface MyJwtPayload {
         id: string;
-        // Add more fields here if your token includes more
+        address: string;
+        email: string;
+        role: string;
       }
       const userData = jwtDecode<MyJwtPayload>(token);
       console.log(userData.id);
@@ -34,9 +38,10 @@ export const CheckoutSection = ({
 
       const data = await checkoutOrder(userId, storedFood, totalPrice);
 
-      alert("Order placed successfully!");
+      // alert("Order placed successfully!");
       setStoredFood([]);
       localStorage.removeItem("food");
+      onCheckoutSuccess();
     } catch (error: any) {
       console.error("Checkout error:", error);
       alert("Checkout failed: " + error.message);

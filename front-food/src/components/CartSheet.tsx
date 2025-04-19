@@ -28,6 +28,12 @@ export function CartSheet() {
   const [storedFood, setStoredFood] = useState<FoodItem[]>([]);
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const handleCheckoutSuccess = () => {
+    setIsOpen(false); // ✅ close sheet
+    setShowSuccess(true); // ✅ show success image
+    setTimeout(() => setShowSuccess(false), 3000); // optional: auto-hide after 3s
+  };
   // const [isOpen, setisOpen] = useState(false);
   // useEffect(() => {
   //   const getCartItems = () => {
@@ -41,65 +47,73 @@ export function CartSheet() {
   // }, [isOpen]);
 
   return (
-    <Sheet
-      open={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open);
-        if (open) {
-          const response = JSON.parse(localStorage.getItem("food") || "[]");
-          setStoredFood(response);
-        }
-      }}
-    >
-      <SheetTrigger asChild>
-        <img src="./icons/cart.svg" alt="icon" width={36} height={36} />
-      </SheetTrigger>
-      <SheetContent className="bg-neutral-700 !max-w-[535px] p-8 gap-6 overflow-y-auto max-h-screen border-none">
-        <SheetHeader className="p-0 gap-6">
-          <SheetTitle>
-            <div className="flex gap-3">
-              <img src="./icons/shoppingCart.svg" alt="shoppinCart" />
-              <h1 className="text-white">Order detail</h1>
-            </div>
-          </SheetTitle>
+    <>
+      {showSuccess && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+          <img src="/orderSuccess.svg" alt="Success" />
+        </div>
+      )}
+      <Sheet
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (open) {
+            const response = JSON.parse(localStorage.getItem("food") || "[]");
+            setStoredFood(response);
+          }
+        }}
+      >
+        <SheetTrigger asChild>
+          <img src="./icons/cart.svg" alt="icon" width={36} height={36} />
+        </SheetTrigger>
+        <SheetContent className="bg-neutral-700 !max-w-[535px] p-8 gap-6 overflow-y-auto max-h-screen border-none">
+          <SheetHeader className="p-0 gap-6">
+            <SheetTitle>
+              <div className="flex gap-3">
+                <img src="./icons/shoppingCart.svg" alt="shoppinCart" />
+                <h1 className="text-white">Order detail</h1>
+              </div>
+            </SheetTitle>
 
-          <div className="w-[471px] h-[44px] bg-white rounded-full flex justify-center items-center gap-2">
-            <button
-              onClick={() => setIsClicked(false)}
-              className={`w-[227.5px] h-9 rounded-full text-[18px] ${
-                isClicked ? "bg-white text-black" : "bg-red-500 text-white"
-              }`}
-            >
-              Cart
-            </button>
-            <button
-              onClick={() => setIsClicked(true)}
-              className={`w-[227.5px] h-9 rounded-full text-[18px] ${
-                isClicked ? "bg-red-500 text-white" : "bg-white text-black"
-              }`}
-            >
-              Order
-            </button>
-          </div>
-        </SheetHeader>
-        {!isClicked ? (
-          <CartCardsContainer
-            storedFood={storedFood}
-            setStoredFood={setStoredFood}
-            closeSheet={() => setIsOpen(false)}
-          />
-        ) : (
-          <CartOrderHistoryContainer closeSheet={() => setIsOpen(false)} />
-        )}
-        <SheetFooter className="p-0">
-          <SheetClose asChild>
-            <CheckoutSection
+            <div className="w-[471px] h-[44px] bg-white rounded-full flex justify-center items-center gap-2">
+              <button
+                onClick={() => setIsClicked(false)}
+                className={`w-[227.5px] h-9 rounded-full text-[18px] ${
+                  isClicked ? "bg-white text-black" : "bg-red-500 text-white"
+                }`}
+              >
+                Cart
+              </button>
+              <button
+                onClick={() => setIsClicked(true)}
+                className={`w-[227.5px] h-9 rounded-full text-[18px] ${
+                  isClicked ? "bg-red-500 text-white" : "bg-white text-black"
+                }`}
+              >
+                Order
+              </button>
+            </div>
+          </SheetHeader>
+          {!isClicked ? (
+            <CartCardsContainer
               storedFood={storedFood}
               setStoredFood={setStoredFood}
+              closeSheet={() => setIsOpen(false)}
             />
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          ) : (
+            <CartOrderHistoryContainer closeSheet={() => setIsOpen(false)} />
+          )}
+          <SheetFooter className="p-0">
+            <SheetClose asChild>
+              <CheckoutSection
+                storedFood={storedFood}
+                setStoredFood={setStoredFood}
+                onCheckoutSuccess={handleCheckoutSuccess}
+              />
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

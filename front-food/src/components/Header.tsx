@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { CartSheet } from "./CartSheet";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ export const Header = () => {
   const [isClicked, setIsClicked] = useState(false);
   const [userData, setUserData] = useState<string | null>(null);
   const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,6 +35,25 @@ export const Header = () => {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsClicked(false);
+      }
+    };
+
+    if (isClicked) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isClicked]);
+
   const toggleDropdown = () => setIsClicked((prev) => !prev);
   return (
     <div className="bg-black px-[88px] py-3 flex justify-between ">
@@ -54,7 +74,7 @@ export const Header = () => {
         <div>
           <CartSheet />
         </div>
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>
             <Image
               src="/icons/user.svg"
@@ -64,7 +84,7 @@ export const Header = () => {
             />
           </button>
           {isClicked && (
-            <div className="absolute -left-36 top-10 bg-white p-4 rounded-xl shadow-md z-10 text-center flex flex-col gap-2">
+            <div className="absolute -left-30 top-12 w-[230px] bg-white p-4 rounded-xl shadow-md z-10 text-center flex flex-col gap-2">
               {userData && <h4>{userData}</h4>}
               <button
                 onClick={handleAuth}
