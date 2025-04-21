@@ -56,11 +56,11 @@ export const Header = () => {
 
   const toggleDropdown = () => setIsClicked((prev) => !prev);
   return (
-    <div className="bg-black px-[88px] py-3 flex justify-between ">
+    <div className="bg-black px-[88px] py-3 flex justify-between items-center">
       <div>
         <Image src="./nomNom.svg" alt="logo" height={44} width={146} />
       </div>
-      <div className=" flex gap-[12.81px]">
+      <div className=" flex h-9 gap-[12.81px]">
         <div className="bg-white rounded-full px-3 py-2 flex gap-1">
           <div className="flex gap-1 items-center">
             <Image src="./icons/location.svg" alt="" width={20} height={20} />

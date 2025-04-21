@@ -61,9 +61,15 @@ const Orders = () => {
   const [accessDenied, setAccessDenied] = useState(false);
   const fetchData = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders`,
-        { cache: "no-store" }
+        {
+          cache: "no-store",
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       if (!res.ok) throw new Error("Failed to fetch orders");
       const result = await res.json();

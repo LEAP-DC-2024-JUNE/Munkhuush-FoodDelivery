@@ -5,14 +5,19 @@ import {
   getFoodOrderById,
   updateFoodOrder,
   deleteFoodOrder,
+  getFoodOrdersByUserId,
 } from "../controllers/foodOrderController.js";
+import { authorization } from "../authorization/authorization.js";
+import { authentication } from "../authorization/authentication.js";
 
 const router = express.Router();
 
 router.post("/", createFoodOrder);
-router.get("/", getFoodOrders);
+router.get("/:id", getFoodOrdersByUserId);
 router.get("/:id", getFoodOrderById);
 router.patch("/:id", updateFoodOrder);
 router.delete("/:id", deleteFoodOrder);
+
+router.route("/").get(authentication, authorization, getFoodOrders);
 
 export default router;

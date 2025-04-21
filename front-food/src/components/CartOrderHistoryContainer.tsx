@@ -39,7 +39,7 @@ export const CartOrderHistoryContainer = ({
         const decoded = jwtDecode<{ id: string }>(token);
         console.log(decoded);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders/${decoded.id}`
         );
         const data: OrderedFood[] = await response.json();
         const filteredData = data.filter((food) => food.userId === decoded.id);
