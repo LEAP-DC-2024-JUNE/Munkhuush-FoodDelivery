@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 
 import { AdminSideBar } from "@/components/AdminSideBar";
 import { DataTable } from "./data-table";
-import { columns } from "./columns";
+import { getColumns } from "./columns";
 
 interface FoodOrder {
   _id: string;
@@ -59,6 +59,21 @@ const Orders = () => {
   const [data, setData] = useState<FoodOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
+  const fetchData = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders`,
+        { cache: "no-store" }
+      );
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      const result = await res.json();
+      setData(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -75,21 +90,21 @@ const Orders = () => {
       return;
     }
 
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders`,
-          { cache: "no-store" }
-        );
-        if (!res.ok) throw new Error("Failed to fetch orders");
-        const result = await res.json();
-        setData(result);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // const fetchData = async () => {
+    //   try {
+    //     const res = await fetch(
+    //       `${process.env.NEXT_PUBLIC_API_URL}/api/food-orders`,
+    //       { cache: "no-store" }
+    //     );
+    //     if (!res.ok) throw new Error("Failed to fetch orders");
+    //     const result = await res.json();
+    //     setData(result);
+    //   } catch (error) {
+    //     console.error(error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
 
     fetchData();
   }, []);
@@ -114,7 +129,7 @@ const Orders = () => {
   return (
     <div className="flex">
       <AdminSideBar />
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={getColumns(fetchData)} data={data} />
     </div>
   );
 };

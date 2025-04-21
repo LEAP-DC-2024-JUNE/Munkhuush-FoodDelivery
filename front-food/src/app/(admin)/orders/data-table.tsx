@@ -30,6 +30,9 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DataTablePagination } from "./DataTablePagination";
+import { DateRange } from "react-day-picker";
+import { DateRangePicker } from "@/components/DateRangePicker";
 type FoodOrderItem = {
   foodName: string;
   price: number;
@@ -62,6 +65,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
 
   const table = useReactTable({
     data,
@@ -72,6 +76,13 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    filterFns: {
+      dateInRange: (row, columnId, filterValue) => {
+        if (!filterValue?.from || !filterValue?.to) return true;
+        const rowDate = new Date(row.getValue(columnId));
+        return rowDate >= filterValue.from && rowDate <= filterValue.to;
+      },
+    },
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
@@ -82,13 +93,17 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  React.useEffect(() => {
+    table.getColumn("createdAt")?.setFilterValue(dateRange);
+  }, [dateRange]);
+
   const items = (data as Order[]).reduce(
     (acc, item) => acc + item.foodOrderItems.length,
     0
   );
 
   return (
-    <div className="w-full pt-6 pl-6 pr-10 flex flex-col gap-6">
+    <div className="w-full pt-6 pl-6 pr-10 pb-6 flex flex-col gap-6">
       <div className="flex justify-end">
         <img src="./icons/admin/adminProfile.svg" alt="adminlogo" />
       </div>
@@ -98,7 +113,7 @@ export function DataTable<TData, TValue>({
           {items} items
         </p>
       </div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-5">
         <Input
           placeholder="Filter emails..."
           value={
@@ -109,6 +124,7 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <DateRangePicker date={dateRange} setDate={setDateRange} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -187,7 +203,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-end space-x-2 py-4">
+      {/* <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -208,7 +224,8 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
-      </div>
+      </div> */}
+      <DataTablePagination table={table} />
     </div>
   );
 }

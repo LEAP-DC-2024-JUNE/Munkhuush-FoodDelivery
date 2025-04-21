@@ -15,6 +15,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+import { Row } from "@tanstack/react-table";
+import { DateRange } from "react-day-picker";
+
+export function dateInRange<T>(
+  row: Row<T>,
+  columnId: string,
+  value: DateRange | undefined
+) {
+  if (!value?.from || !value?.to) return true;
+
+  const rowDate = new Date(row.getValue(columnId));
+  rowDate.setHours(0, 0, 0, 0);
+
+  const from = new Date(value.from);
+  const to = new Date(value.to);
+  from.setHours(0, 0, 0, 0);
+  to.setHours(0, 0, 0, 0);
+
+  return rowDate >= from && rowDate <= to;
+}
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -26,8 +49,7 @@ export type FoodOrder = {
   email: string;
   createdAt: string;
 };
-
-export const columns: ColumnDef<FoodOrder>[] = [
+export const getColumns = (refetchData: () => void): ColumnDef<FoodOrder>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -134,6 +156,10 @@ export const columns: ColumnDef<FoodOrder>[] = [
       const formattedDate = new Date(rawDate).toISOString().split("T")[0]; // YYYY-MM-DD
       return formattedDate;
     },
+    enableSorting: true,
+    enableColumnFilter: true,
+    filterFn: dateInRange, // use the actual function, not a string
+    sortingFn: "datetime",
   },
   {
     accessorKey: "totalPrice",
@@ -159,6 +185,7 @@ export const columns: ColumnDef<FoodOrder>[] = [
       const orderId = row.original._id;
       const status = row.getValue("status") as string;
       const [isOpen, setIsOpen] = useState(false);
+      const router = useRouter();
 
       const updateStatus = async (newStatus: string) => {
         try {
@@ -170,7 +197,8 @@ export const columns: ColumnDef<FoodOrder>[] = [
               body: JSON.stringify({ status: newStatus }),
             }
           );
-          // Optionally: show toast, refresh table, etc.
+          toast.success("Order status updated.");
+          refetchData();
         } catch (error) {
           console.error("Failed to update status", error);
         }
