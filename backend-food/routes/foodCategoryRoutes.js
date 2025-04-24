@@ -6,10 +6,12 @@ import {
 import { updateCategories } from "../controllers/foodCategoryController.js";
 import { deleteCategory } from "../controllers/foodCategoryController.js";
 import { testAggregate } from "../controllers/testAggregate.js";
+import { authentication } from "../authorization/authentication.js";
+import { authorization } from "../authorization/authorization.js";
 
 const router = express.Router();
 
-router.post("/", addCategory);
+router.route("/").post(authentication, authorization("ADMIN"), addCategory);
 
 router.get("/", getCategories);
 router.patch("/:id", updateCategories);

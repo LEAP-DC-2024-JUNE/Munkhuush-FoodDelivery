@@ -41,6 +41,7 @@ export function AdminAddFood({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const token = localStorage.getItem("token");
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -80,7 +81,10 @@ export function AdminAddFood({
     console.log("daragdlaa");
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/foods`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         ...newFood,
         category: categoryId,

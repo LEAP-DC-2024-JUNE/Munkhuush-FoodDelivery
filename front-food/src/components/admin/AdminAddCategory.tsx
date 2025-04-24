@@ -34,6 +34,7 @@ export function AdminAddCategory({
 }: AdminAddCategoryProps) {
   const [newCategory, setNewCategory] = useState("");
   const [open, setOpen] = useState(false);
+  const token = localStorage.getItem("token");
   const handleAddCategory = async () => {
     toast("New category is being added to the menu.");
 
@@ -41,7 +42,10 @@ export function AdminAddCategory({
       `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ categoryName: newCategory }),
       }
     );

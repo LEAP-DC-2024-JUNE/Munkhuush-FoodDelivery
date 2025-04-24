@@ -34,22 +34,22 @@ const AdminCategories = () => {
     fetchData();
   }, []);
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           "${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate"
-  //         );
-  //         const data: FoodCategory[] = await response.json();
-  //         setFoodCategories(data);
-  //         console.log(data);
-  //       } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //       }
-  //     };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate"
+  //       );
+  //       const data: FoodCategory[] = await response.json();
+  //       setFoodCategories(data);
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
 
-  //     fetchData();
-  //   }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="flex flex-col gap-4  rounded-xl p-6  bg-white ">
@@ -59,7 +59,7 @@ const AdminCategories = () => {
           All dishes
           {/* <span>
             {foodCategories.reduce(
-              (acc, category) => acc + category.foods.length,
+              (acc, category) => acc + category.foods?.length,
               0
             )}
           </span> */}

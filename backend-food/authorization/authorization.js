@@ -1,13 +1,17 @@
-import jwt from "jsonwebtoken";
-export const authorization = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-  const decoded = jwt.decode(authHeader);
-  if (decoded.role !== "ADMIN") {
-    return res.json({ message: "Acces denied!, Only for admin" });
-  }
+export const authorization = (role) => {
+  return (req, res, next) => {
+    const user = req.user;
 
-  next();
+    if (!user) {
+      return res.status(401).json({ message: "No user found. Please login." });
+    }
+
+    if (user.role !== role) {
+      return res
+        .status(403)
+        .json({ message: "Access denied! Only for " + role });
+    }
+
+    next();
+  };
 };

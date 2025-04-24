@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { AdminEditFood } from "./AdminEditFood";
 
 type foodType = {
   _id: any;
@@ -7,13 +8,16 @@ type foodType = {
   price: number;
   ingredients: string;
   image: string;
+  category: string;
 };
 
 type CardPropsType = {
   cardData: foodType;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function AdminFoodCard({ cardData }: CardPropsType) {
+export function AdminFoodCard({ cardData, isOpen, setIsOpen }: CardPropsType) {
   return (
     <Card className="w-[270.75px] h-[241px] p-4">
       <CardContent className=" relative p-0">
@@ -24,7 +28,12 @@ export function AdminFoodCard({ cardData }: CardPropsType) {
         />
         <div className="absolute right-[20px] bottom-[20px] hover:cursor-pointer">
           {/* <DialogCard data={cardData} /> */}
-          <img src="./icons/admin/adminFoodEdit.svg" alt="edit" />
+          {/* <img src="./icons/admin/adminFoodEdit.svg" alt="edit" /> */}
+          <AdminEditFood
+            cardData={cardData}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-2 p-0">

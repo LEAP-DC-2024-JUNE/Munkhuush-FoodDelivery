@@ -1,7 +1,7 @@
 "use client";
-import AdminCategories from "@/components/AdminCategories";
-import { AdminFoodMenu } from "@/components/AdminFoodMenu";
-import { AdminSideBar } from "@/components/AdminSideBar";
+import AdminCategories from "@/components/admin/AdminCategories";
+import { AdminFoodMenu } from "@/components/admin/AdminFoodMenu";
+import { AdminSideBar } from "@/components/admin/AdminSideBar";
 import GroupedCategories from "@/components/GroupedCategories";
 import { useEffect, useState } from "react";
 

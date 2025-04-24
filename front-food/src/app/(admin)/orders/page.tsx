@@ -33,7 +33,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 
-import { AdminSideBar } from "@/components/AdminSideBar";
+import { AdminSideBar } from "@/components/admin/AdminSideBar";
 import { DataTable } from "./data-table";
 import { getColumns } from "./columns";
 
@@ -67,7 +67,7 @@ const Orders = () => {
         {
           cache: "no-store",
           headers: {
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

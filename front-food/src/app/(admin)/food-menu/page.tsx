@@ -1,8 +1,8 @@
 "use client";
 
-import AdminCategories from "@/components/AdminCategories";
-import { AdminFoodMenu } from "@/components/AdminFoodMenu";
-import { AdminSideBar } from "@/components/AdminSideBar";
+import AdminCategories from "@/components/admin/AdminCategories";
+import { AdminFoodMenu } from "@/components/admin/AdminFoodMenu";
+import { AdminSideBar } from "@/components/admin/AdminSideBar";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

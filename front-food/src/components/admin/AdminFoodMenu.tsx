@@ -10,6 +10,7 @@ interface FoodItem {
   price: number;
   ingredients: string;
   image: string;
+  category: string;
 }
 
 export interface FoodCategory {
@@ -59,7 +60,14 @@ export const AdminFoodMenu = () => {
                   categoryId={category._id}
                 />
                 {category.foods.map((food) => {
-                  return <AdminFoodCard key={food._id} cardData={food} />;
+                  return (
+                    <AdminFoodCard
+                      isOpen={isOpen}
+                      setIsOpen={setIsOpen}
+                      key={food._id}
+                      cardData={food}
+                    />
+                  );
                 })}
               </div>
             </div>

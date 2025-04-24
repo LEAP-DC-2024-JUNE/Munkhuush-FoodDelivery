@@ -13,11 +13,11 @@ import { authentication } from "../authorization/authentication.js";
 const router = express.Router();
 
 router.post("/", createFoodOrder);
-router.get("/:id", getFoodOrdersByUserId);
+router.route("/:id").get(authentication, getFoodOrdersByUserId);
 router.get("/:id", getFoodOrderById);
 router.patch("/:id", updateFoodOrder);
 router.delete("/:id", deleteFoodOrder);
 
-router.route("/").get(authentication, authorization, getFoodOrders);
+router.route("/").get(authentication, authorization("ADMIN"), getFoodOrders);
 
 export default router;
