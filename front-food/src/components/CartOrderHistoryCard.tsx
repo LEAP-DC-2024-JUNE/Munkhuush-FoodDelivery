@@ -2,6 +2,7 @@ interface FoodOrderItem {
   foodId: string;
   foodName: string;
   quantity: number;
+  _id: string;
 }
 
 interface OrderedFood {
@@ -31,7 +32,7 @@ export const CartOrderHistoryCard = ({
       </div>
       {orderedFood.foodOrderItems?.map((item) => {
         return (
-          <div key={item.foodId} className="flex justify-between ">
+          <div key={item._id} className="flex justify-between ">
             <div className="flex items-center gap-2">
               <img
                 src="./icons/cartfood.svg"

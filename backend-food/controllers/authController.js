@@ -9,16 +9,35 @@ const generateJwtToken = (id, address, email, role) => {
 };
 
 export const signup = async (req, res) => {
-  const { email, password, phoneNumber, address, role } = req.body;
+  const { email, password, phoneNumber, address } = req.body;
   try {
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already in use" });
     }
-    const newUser = await userModel.create(req.body);
-    res.status(201).json(newUser);
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const newUser = await userModel.create({
+      email,
+      password: hashedPassword,
+      phoneNumber,
+      address,
+      role: "USER",
+    });
+
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        id: newUser._id,
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        address: newUser.address,
+        role: newUser.role,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to create an user!" });
+    res.status(500).json({ error: "Failed to create a user!" });
   }
 };
 

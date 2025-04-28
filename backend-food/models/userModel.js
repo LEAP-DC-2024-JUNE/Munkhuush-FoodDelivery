@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 
 const UserRoleEnum = {
   USER: "USER",
@@ -20,12 +19,14 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: Object.values(UserRoleEnum), default: "USER" },
     orderedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "FoodOrder" }],
     isVerified: { type: Boolean, default: false },
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
   { timestamps: true }
 );
 
-userSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(this.password, 12);
-});
+// userSchema.pre("save", async function () {
+//   this.password = await bcrypt.hash(this.password, 12);
+// });  <--- wrong method, move it to the controller
 
 export default mongoose.model("User", userSchema);
