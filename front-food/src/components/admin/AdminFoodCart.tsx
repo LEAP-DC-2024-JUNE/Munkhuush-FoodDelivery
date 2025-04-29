@@ -27,8 +27,6 @@ export function AdminFoodCard({ cardData, isOpen, setIsOpen }: CardPropsType) {
           className="w-[238.75px] h-[129px] rounded-xl"
         />
         <div className="absolute right-[20px] bottom-[20px] hover:cursor-pointer">
-          {/* <DialogCard data={cardData} /> */}
-          {/* <img src="./icons/admin/adminFoodEdit.svg" alt="edit" /> */}
           <AdminEditFood
             cardData={cardData}
             isOpen={isOpen}

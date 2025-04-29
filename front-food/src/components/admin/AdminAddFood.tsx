@@ -140,7 +140,8 @@ export function AdminAddFood({
               Price
             </Label>
             <input
-              type="text"
+              step="0.01"
+              type="number"
               value={newFood.price}
               onChange={(e) => handleChange(e)}
               name="price"

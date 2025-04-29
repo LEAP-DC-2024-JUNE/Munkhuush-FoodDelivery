@@ -12,7 +12,9 @@ const router = express.Router();
 
 router.route("/").post(authentication, authorization("ADMIN"), createFood);
 router.get("/", getAllFoods);
-router.patch("/:id", updateFood);
-router.delete("/:id", deleteFood);
+
+router.route("/:id").patch(authentication, authorization("ADMIN"), updateFood);
+
+router.route("/:id").delete(authentication, authorization("ADMIN"), deleteFood);
 
 export default router;

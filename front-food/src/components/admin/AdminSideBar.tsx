@@ -45,16 +45,6 @@ export const AdminSideBar = () => {
           )}
           <span className="text-sm font-medium">Orders</span>
         </div>
-        <div
-          className={`${
-            pathname === "/settings"
-              ? "text-white bg-black  rounded-full"
-              : "text-black"
-          } text-sm font-medium flex gap-2.5 w-[165px] h-[40px] items-center px-6 `}
-        >
-          <img src="./icons/admin/adminSettings.svg" alt="settings" />
-          <span className="text-sm font-medium">Settings</span>
-        </div>
       </div>
     </div>
   );

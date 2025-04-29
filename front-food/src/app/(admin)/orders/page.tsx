@@ -116,7 +116,14 @@ const Orders = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="flex  ">
+        <AdminSideBar />
+        <div className="h-screen w-full flex justify-center items-center">
+          Loading...
+        </div>
+      </div>
+    );
   }
   if (accessDenied) {
     return (
@@ -135,7 +142,12 @@ const Orders = () => {
   return (
     <div className="flex">
       <AdminSideBar />
-      <DataTable columns={getColumns(fetchData)} data={data} />
+      <div className="w-full bg-gray-50 p-6 flex flex-col gap-6 ">
+        <div className="flex justify-end">
+          <img src="./icons/admin/adminProfile.svg" alt="adminlogo" />
+        </div>
+        <DataTable columns={getColumns(fetchData)} data={data} />
+      </div>
     </div>
   );
 };

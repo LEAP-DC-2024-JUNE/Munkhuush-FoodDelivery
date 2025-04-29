@@ -36,7 +36,14 @@ const foodMenu = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="flex  ">
+        <AdminSideBar />
+        <div className="h-screen w-full flex justify-center items-center">
+          Loading...
+        </div>
+      </div>
+    );
   }
   if (accessDenied) {
     return (

@@ -103,17 +103,14 @@ export function DataTable<TData, TValue>({
   );
 
   return (
-    <div className="w-full pt-6 pl-6 pr-10 pb-6 flex flex-col gap-6">
-      <div className="flex justify-end">
-        <img src="./icons/admin/adminProfile.svg" alt="adminlogo" />
-      </div>
-      <div>
+    <div className="w-full  pt-6 pl-6 pr-10 pb-6 flex flex-col gap-6 bg-white rounded-xl">
+      <div className=" ">
         <h1 className="text-xl font-bold">Orders</h1>
         <p className="text-xs font-medium text-muted-foreground">
           {items} items
         </p>
       </div>
-      <div className="flex items-center py-4 gap-5">
+      <div className="flex items-center py-4 gap-5 ">
         <Input
           placeholder="Filter emails..."
           value={
@@ -122,7 +119,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("userEmail")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm bg-white"
         />
         <DateRangePicker date={dateRange} setDate={setDateRange} />
         <DropdownMenu>
@@ -152,8 +149,8 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border bg-white ">
+        <Table className="">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -203,28 +200,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div> */}
       <DataTablePagination table={table} />
     </div>
   );
