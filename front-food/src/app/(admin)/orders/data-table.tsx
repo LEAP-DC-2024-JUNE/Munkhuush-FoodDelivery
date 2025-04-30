@@ -33,6 +33,7 @@ import {
 import { DataTablePagination } from "./DataTablePagination";
 import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/DateRangePicker";
+import { AdminChangeStatus } from "@/components/admin/AdminChangeStatus";
 type FoodOrderItem = {
   foodName: string;
   price: number;
@@ -122,6 +123,13 @@ export function DataTable<TData, TValue>({
           className="max-w-sm bg-white"
         />
         <DateRangePicker date={dateRange} setDate={setDateRange} />
+        <AdminChangeStatus
+          selectedIds={table
+            .getSelectedRowModel()
+            .rows.map((row) => (row.original as Order)._id)}
+          onSuccess={() => table.resetRowSelection()}
+        />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

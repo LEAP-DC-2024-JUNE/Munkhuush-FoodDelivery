@@ -18,6 +18,7 @@ type AdminAddFoodProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   cardData: NewFood & { _id: string };
+  categoryName: string;
 };
 
 type NewFood = {
@@ -38,6 +39,7 @@ export function AdminEditFood({
   isOpen,
   setIsOpen,
   cardData,
+  categoryName,
 }: AdminAddFoodProps) {
   const [newFood, setNewFood] = useState<NewFood>({
     foodName: cardData.foodName,
@@ -199,6 +201,14 @@ export function AdminEditFood({
               onChange={(e) => setCategoryId(e.target.value)}
               className="col-span-3 border rounded-md p-1"
             >
+              {/* {foodCategories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.categoryName}
+                </option>
+              ))} */}
+              {!foodCategories.find((c) => c._id === categoryId) && (
+                <option value={categoryId}>{categoryName}</option>
+              )}
               {foodCategories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.categoryName}

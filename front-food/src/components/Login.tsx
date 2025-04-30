@@ -8,6 +8,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useState } from "react";
 type DecodedToken = {
   id: string;
   email: string;
@@ -15,6 +17,7 @@ type DecodedToken = {
   // add any other properties your token includes
 };
 export const Login = () => {
+  const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
   const validationSchema = Yup.object({
     email: Yup.string().required("email is required").email(),
@@ -27,6 +30,7 @@ export const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsLogin(true);
       try {
         const data = await login(values);
         localStorage.setItem("token", data.token);
@@ -40,7 +44,10 @@ export const Login = () => {
           router.push("/food-menu");
         }
       } catch (error: any) {
-        alert("Login failed: " + error.message);
+        // alert("Login failed: " + error.message);
+        toast("Login failed:  Wrong username or password");
+      } finally {
+        setIsLogin(false);
       }
     },
   });
@@ -51,6 +58,7 @@ export const Login = () => {
         onSubmit={formik.handleSubmit}
       >
         <img
+          onClick={() => router.push("/")}
           src="./icons/login-chevron.svg"
           alt="chevron"
           className="w-[36px] h-[36px]"
@@ -89,7 +97,9 @@ export const Login = () => {
         >
           Forgot password?
         </Link>
-        <Button type="submit">Let's go</Button>
+        <Button disabled={isLogin} type="submit">
+          {!isLogin ? "Let's go" : "Logging in"}
+        </Button>
         <div className="flex gap-3 justify-center">
           <span className="text-muted-foreground ">Don’t have an account?</span>
           <Link className="text-blue-500" href={"/signup"}>

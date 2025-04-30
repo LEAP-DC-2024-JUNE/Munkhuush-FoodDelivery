@@ -126,6 +126,31 @@ export const updateFoodOrder = async (req, res) => {
   }
 };
 
+export const updateMultipleFoodOrders = async (req, res) => {
+  const { updates } = req.body;
+
+  if (!Array.isArray(updates) || updates.length === 0) {
+    return res.status(400).json({ error: "No updates provided." });
+  }
+
+  try {
+    const bulkOperations = updates.map((order) => ({
+      updateOne: {
+        filter: { _id: order._id },
+        update: { $set: { status: order.status } },
+      },
+    }));
+
+    const result = await FoodOrder.bulkWrite(bulkOperations);
+
+    res.status(200).json({ message: "Orders updated successfully", result });
+  } catch (error) {
+    console.error("Bulk update error:", error.message || error);
+
+    res.status(500).json({ error: "Failed to update multiple orders." });
+  }
+};
+
 export const deleteFoodOrder = async (req, res) => {
   try {
     const deletedOrder = await FoodOrder.findByIdAndDelete(req.params.id);

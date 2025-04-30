@@ -66,6 +66,7 @@ export const AdminFoodMenu = () => {
                       setIsOpen={setIsOpen}
                       key={food._id}
                       cardData={food}
+                      categoryName={category.categoryName}
                     />
                   );
                 })}

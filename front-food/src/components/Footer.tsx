@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <div className="bg-black py-[60px] ">
       <div className="">
-        <Image src="./fresh.svg" alt="" width={1440} height={92} />
+        <img src="./fresh.svg" alt="fresh fast" height={92} />
       </div>
       <div className="mt-[76px] mb-[104px] mx-[88px] flex gap-[220px] ">
         <div>

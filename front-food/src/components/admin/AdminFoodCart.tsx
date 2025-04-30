@@ -13,11 +13,17 @@ type foodType = {
 
 type CardPropsType = {
   cardData: foodType;
+  categoryName: string;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function AdminFoodCard({ cardData, isOpen, setIsOpen }: CardPropsType) {
+export function AdminFoodCard({
+  cardData,
+  isOpen,
+  setIsOpen,
+  categoryName,
+}: CardPropsType) {
   return (
     <Card className="w-[270.75px] h-[241px] p-4">
       <CardContent className=" relative p-0">
@@ -31,6 +37,7 @@ export function AdminFoodCard({ cardData, isOpen, setIsOpen }: CardPropsType) {
             cardData={cardData}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            categoryName={categoryName}
           />
         </div>
       </CardContent>

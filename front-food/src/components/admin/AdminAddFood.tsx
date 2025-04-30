@@ -45,12 +45,14 @@ export function AdminAddFood({
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPreviewImage(imageUrl);
-      setNewFood({ ...newFood, image: file });
+      if (file.type.startsWith("image/")) {
+        const imageUrl = URL.createObjectURL(file);
+        setPreviewImage(imageUrl);
+        setNewFood({ ...newFood, image: file });
+      } else {
+        toast.error("Only image files are allowed.");
+      }
     }
-
-    // setNewFood({ ...newFood, image: e.target.files[0] });
   };
 
   const uploadImage = async () => {
@@ -95,12 +97,22 @@ export function AdminAddFood({
       toast("New dish is being added to the menu");
       setOpen(false);
       setIsOpen(!isOpen);
+      setNewFood({
+        foodName: "",
+        price: 0,
+        image: "",
+        ingredients: "",
+        category: categoryId,
+      });
+      setPreviewImage(null);
     }
     setIsSubmitting(false);
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setNewFood((prev) => ({
@@ -120,66 +132,105 @@ export function AdminAddFood({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Dishes info</DialogTitle>
+          <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="foodName" className="text-right">
-              Dish name
-            </Label>
-            <input
-              type="text"
-              value={newFood.foodName}
-              onChange={(e) => handleChange(e)}
-              name="foodName"
-              className="col-span-3 border rounded-md"
-            />
+          <div className="flex justify-between">
+            <div className=" flex flex-col gap-2">
+              <Label htmlFor="foodName" className="text-right">
+                Food name
+              </Label>
+              <input
+                placeholder="  Type food name"
+                type="text"
+                value={newFood.foodName}
+                onChange={(e) => handleChange(e)}
+                name="foodName"
+                className="col-span-3 border rounded-md h-[38px]"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="price" className="text-right">
+                Food price
+              </Label>
+              <input
+                placeholder="  Enter price"
+                step="0.01"
+                type="number"
+                value={newFood.price}
+                onChange={(e) => handleChange(e)}
+                name="price"
+                className="col-span-3 border rounded-md h-[38px]"
+              />
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="price" className="text-right">
-              Price
-            </Label>
-            <input
-              step="0.01"
-              type="number"
-              value={newFood.price}
-              onChange={(e) => handleChange(e)}
-              name="price"
-              className="col-span-3 border rounded-md"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="ingredients" className="text-right">
               Ingredients
             </Label>
-            <input
-              type="text"
+            <textarea
+              id="ingredients"
               name="ingredients"
               value={newFood.ingredients}
               onChange={(e) => handleChange(e)}
-              className="col-span-3 border rounded-md"
+              className="col-span-3 border rounded-md h-[90px] w-full"
+              placeholder="  List ingredients..."
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="price" className="text-right">
-              Image
-            </Label>
-            <input
-              type="file"
-              onChange={(e) => handleFile(e)}
-              name="image"
-              className="col-span-3 border rounded-md"
-            />
+          <label className="text-[14px] font-medium" htmlFor="">
+            Food image
+          </label>
+          <div
+            className="border rounded-xs h-[138px] bg-blue-50"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const file = e.dataTransfer.files?.[0];
+              if (!file) return;
+
+              if (file.type.startsWith("image/")) {
+                const imageUrl = URL.createObjectURL(file);
+                setPreviewImage(imageUrl);
+                setNewFood((prev) => ({ ...prev, image: file }));
+              } else {
+                toast.error("Only image files are allowed.");
+              }
+            }}
+          >
+            {!previewImage && (
+              <div className="flex flex-col h-[138px]">
+                <Label
+                  htmlFor="pictureUpload"
+                  className="w-full h-[138px] flex justify-center"
+                >
+                  <img src="./icons/imageUpload.svg" alt="upload" />
+                  Choose a file or drag & drop it here
+                </Label>
+                <input
+                  id="pictureUpload"
+                  type="file"
+                  onChange={(e) => handleFile(e)}
+                  name="image"
+                  className="col-span-3 border rounded-md hidden"
+                />
+              </div>
+            )}
+            {previewImage && (
+              <div className="relative">
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="max-h-[138px] w-full rounded-md mx-auto"
+                />
+                <img
+                  onClick={() => setPreviewImage(null)}
+                  className="absolute top-1 right-1 "
+                  src="./icons/cancel.svg"
+                  alt="x"
+                />
+              </div>
+            )}
           </div>
-          {previewImage && (
-            <div className="mt-4">
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="max-h-48 rounded-md mx-auto"
-              />
-            </div>
-          )}
         </div>
         <DialogFooter>
           <Button
