@@ -19,6 +19,7 @@ type AdminAddFoodProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   cardData: NewFood & { _id: string };
   categoryName: string;
+  catId: string;
 };
 
 type NewFood = {
@@ -40,6 +41,7 @@ export function AdminEditFood({
   setIsOpen,
   cardData,
   categoryName,
+  catId,
 }: AdminAddFoodProps) {
   const [newFood, setNewFood] = useState<NewFood>({
     foodName: cardData.foodName,
@@ -53,7 +55,7 @@ export function AdminEditFood({
   );
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [categoryId, setCategoryId] = useState(cardData.category);
+  const [categoryId, setCategoryId] = useState(catId);
   const [foodCategories, setFoodCategories] = useState<FoodCategory[]>([]);
   const token = localStorage.getItem("token");
 
@@ -69,7 +71,8 @@ export function AdminEditFood({
       setPreviewImage(
         typeof cardData.image === "string" ? cardData.image : null
       );
-      setCategoryId(cardData.category);
+
+      // setCategoryId(cart);
     }
   }, [isOpen, cardData]);
 
@@ -164,6 +167,8 @@ export function AdminEditFood({
     }));
   };
 
+  console.log(categoryId);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -201,14 +206,6 @@ export function AdminEditFood({
               onChange={(e) => setCategoryId(e.target.value)}
               className="col-span-3 border rounded-md p-1"
             >
-              {/* {foodCategories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.categoryName}
-                </option>
-              ))} */}
-              {!foodCategories.find((c) => c._id === categoryId) && (
-                <option value={categoryId}>{categoryName}</option>
-              )}
               {foodCategories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.categoryName}

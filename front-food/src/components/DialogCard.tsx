@@ -59,6 +59,7 @@ export function DialogCard({ data }: CardPropsType) {
       toast(`${data.foodName} x${count} added successfully!`);
 
       localStorage.setItem("food", JSON.stringify(cart));
+      window.dispatchEvent(new StorageEvent("storage", { key: "food" }));
       console.log("Cart updated:", cart);
       setOpen(false);
       setCount(1);

@@ -16,6 +16,7 @@ interface FoodItem {
 export interface FoodCategory {
   _id: string;
   categoryName: string;
+
   foods: FoodItem[];
 }
 
@@ -67,6 +68,7 @@ export const AdminFoodMenu = () => {
                       key={food._id}
                       cardData={food}
                       categoryName={category.categoryName}
+                      categoryId={category._id}
                     />
                   );
                 })}

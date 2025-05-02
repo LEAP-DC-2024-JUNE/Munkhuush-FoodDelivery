@@ -29,22 +29,33 @@ export function CartSheet() {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
-  const handleCheckoutSuccess = () => {
-    setIsOpen(false); // ✅ close sheet
-    setShowSuccess(true); // ✅ show success image
-    setTimeout(() => setShowSuccess(false), 3000); // optional: auto-hide after 3s
-  };
-  // const [isOpen, setisOpen] = useState(false);
-  // useEffect(() => {
-  //   const getCartItems = () => {
-  //     if (typeof window !== "undefined") {
-  //       const response = JSON.parse(localStorage.getItem("food")) || [];
-  //       setStoredFood(response);
-  //     }
-  //   };
+  useEffect(() => {
+    const stored = localStorage.getItem("food");
+    const parsed = stored ? JSON.parse(stored) : [];
+    setStoredFood(parsed);
+  }, []);
+  useEffect(() => {
+    const syncCart = () => {
+      const updated = localStorage.getItem("food");
+      const parsed = updated ? JSON.parse(updated) : [];
+      setStoredFood(parsed);
+    };
 
-  //   getCartItems();
-  // }, [isOpen]);
+    window.addEventListener("storage", syncCart);
+    return () => window.removeEventListener("storage", syncCart);
+  }, []);
+
+  const totalQuantity = storedFood.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
+
+  const handleCheckoutSuccess = () => {
+    setIsOpen(false);
+    setShowSuccess(true);
+    setStoredFood([]);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
 
   return (
     <>
@@ -58,13 +69,21 @@ export function CartSheet() {
         onOpenChange={(open) => {
           setIsOpen(open);
           if (open) {
-            const response = JSON.parse(localStorage.getItem("food") || "[]");
-            setStoredFood(response);
+            const updated = localStorage.getItem("food");
+            const parsed = updated ? JSON.parse(updated) : [];
+            setStoredFood(parsed);
           }
         }}
       >
         <SheetTrigger asChild>
-          <img src="./icons/cart.svg" alt="icon" width={36} height={36} />
+          <div className="relative">
+            <img src="./icons/cart.svg" alt="icon" width={36} height={36} />
+            {totalQuantity > 0 && (
+              <span className="absolute -bottom-1 -right-1 bg-red-400 text-white px-1.5 rounded-full text-xs">
+                {totalQuantity}
+              </span>
+            )}
+          </div>
         </SheetTrigger>
         <SheetContent className="bg-neutral-700 !max-w-[535px] p-8 gap-6 overflow-y-auto max-h-screen border-none">
           <SheetHeader className="p-0 gap-6">

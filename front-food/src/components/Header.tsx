@@ -5,23 +5,48 @@ import { useEffect, useState, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { UpdateAddress } from "./UpdateAdress";
+type UserData = {
+  _id: string;
+  email: string;
+  address: string;
+};
 export const Header = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const [userData, setUserData] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
       try {
         const decoded: any = jwtDecode(token);
-        setUserData(decoded.email);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${decoded.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+        if (res.ok) {
+          setUserData(data);
+        } else {
+          console.error("Failed to fetch user", data);
+        }
       } catch (err) {
-        console.error("Invalid token");
+        console.error("Error fetching user:", err);
       }
-    }
+    };
+
+    fetchUser();
   }, []);
+
   const handleAuth = () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -61,18 +86,12 @@ export const Header = () => {
         <Image src="./nomNom.svg" alt="logo" height={44} width={146} />
       </div>
       <div className=" flex h-9 gap-[12.81px]">
-        <div className="bg-white rounded-full px-3 py-2 flex gap-1">
-          <div className="flex gap-1 items-center">
-            <Image src="./icons/location.svg" alt="" width={20} height={20} />
-            <span className="text-red-500 text-[12px]">Delivery address:</span>
-          </div>
-          <div className="flex gap-1 items-center">
-            <span className="text-[12px] text-gray-400">Add Location</span>
-            <Image src="./icons/arrow.svg" alt="" width={20} height={20} />
-          </div>
-        </div>
+        <UpdateAddress setUserData={setUserData} userData={userData} />
         <div>
           <CartSheet />
+          {/* <span className="absolute -bottom-1 -right-1 bg-red-400 text-white px-1.5 rounded-full text-xs">
+            1
+          </span> */}
         </div>
         <div className="relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>
@@ -85,7 +104,7 @@ export const Header = () => {
           </button>
           {isClicked && (
             <div className="absolute -left-30 top-12 w-[230px] bg-white p-4 rounded-xl shadow-md z-10 text-center flex flex-col gap-2">
-              {userData && <h4>{userData}</h4>}
+              {userData?.email && <h4>{userData?.email}</h4>}
               <button
                 onClick={handleAuth}
                 className="rounded-full bg-gray-100 px-3 py-2 text-sm text-black"
