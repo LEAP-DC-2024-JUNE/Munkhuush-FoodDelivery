@@ -167,8 +167,6 @@ export function AdminEditFood({
     }));
   };
 
-  console.log(categoryId);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -259,11 +257,11 @@ export function AdminEditFood({
           </div>
 
           {previewImage && (
-            <div className="mt-4">
+            <div className="mt-4 ">
               <img
                 src={previewImage}
                 alt="Preview"
-                className="max-h-48 rounded-md mx-auto"
+                className="max-h-48 rounded-md mx-auto w-full"
               />
             </div>
           )}

@@ -53,11 +53,13 @@ type Order = {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onRefresh: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onRefresh,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -127,7 +129,10 @@ export function DataTable<TData, TValue>({
           selectedIds={table
             .getSelectedRowModel()
             .rows.map((row) => (row.original as Order)._id)}
-          onSuccess={() => table.resetRowSelection()}
+          onSuccess={() => {
+            onRefresh();
+            table.resetRowSelection();
+          }}
         />
 
         <DropdownMenu>

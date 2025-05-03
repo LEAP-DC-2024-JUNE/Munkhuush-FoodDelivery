@@ -1,10 +1,19 @@
 import { checkoutOrder } from "@/utils/apiService";
 import { jwtDecode } from "jwt-decode";
 import type { StoredFoodItem } from "@/utils/types";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 interface CheckoutSectionProps {
   storedFood: StoredFoodItem[];
   setStoredFood: (items: StoredFoodItem[]) => void;
   onCheckoutSuccess: () => void; // ✅ callback
+}
+
+interface MyJwtPayload {
+  id: string;
+  address: string;
+  email: string;
+  role: string;
 }
 
 export const CheckoutSection = ({
@@ -12,6 +21,7 @@ export const CheckoutSection = ({
   setStoredFood,
   onCheckoutSuccess,
 }: CheckoutSectionProps) => {
+  const router = useRouter();
   const totalPrice =
     storedFood.reduce((acc, item) => acc + item.totalPrice, 0) + 0.99;
   const itemQuantities = storedFood.reduce(
@@ -23,22 +33,18 @@ export const CheckoutSection = ({
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("You must be logged in to checkout.");
+        toast.error("You must be logged in to checkout.");
+        router.push("/login");
         return;
       }
-      interface MyJwtPayload {
-        id: string;
-        address: string;
-        email: string;
-        role: string;
-      }
+
       const userData = jwtDecode<MyJwtPayload>(token);
       console.log(userData.id);
       const userId = userData.id;
 
       const data = await checkoutOrder(userId, storedFood, totalPrice);
 
-      // alert("Order placed successfully!");
+      toast.success("Order placed successfully!");
       setStoredFood([]);
       localStorage.removeItem("food");
       onCheckoutSuccess();

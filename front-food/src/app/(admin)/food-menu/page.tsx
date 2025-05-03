@@ -11,8 +11,28 @@ interface MyJwtPayload {
   id: string;
   role: string;
 }
+interface FoodItem {
+  _id: string;
+  foodName: string;
+  price: number;
+  ingredients: string;
+  image: string;
+  category: string;
+}
+
+export interface FoodCategory {
+  _id: string;
+  categoryName: string;
+
+  foods: FoodItem[];
+}
 
 const foodMenu = () => {
+  const [foodCategories, setFoodCategories] = useState<FoodCategory[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -34,6 +54,16 @@ const foodMenu = () => {
       setLoading(false);
     }
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate`
+      );
+      const data = await res.json();
+      setFoodCategories(data);
+    };
+    fetchData();
+  }, [isOpen]);
 
   if (loading) {
     return (
@@ -65,8 +95,17 @@ const foodMenu = () => {
         <div className="flex justify-end">
           <img src="./icons/admin/adminProfile.svg" alt="adminlogo" />
         </div>
-        <AdminCategories />
-        <AdminFoodMenu />
+        <AdminCategories
+          foodCategories={foodCategories}
+          selectedCategoryId={selectedCategoryId}
+          onSelectCategory={setSelectedCategoryId}
+        />
+        <AdminFoodMenu
+          foodCategories={foodCategories}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          selectedCategoryId={selectedCategoryId}
+        />
       </div>
     </div>
   );

@@ -89,9 +89,6 @@ export const Header = () => {
         <UpdateAddress setUserData={setUserData} userData={userData} />
         <div>
           <CartSheet />
-          {/* <span className="absolute -bottom-1 -right-1 bg-red-400 text-white px-1.5 rounded-full text-xs">
-            1
-          </span> */}
         </div>
         <div className="relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>

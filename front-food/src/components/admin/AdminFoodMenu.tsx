@@ -1,6 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import { AdminFoodCard } from "./AdminFoodCart";
 import { AdminAddFood } from "./AdminAddFood";
 
@@ -20,65 +18,59 @@ export interface FoodCategory {
   foods: FoodItem[];
 }
 
-export const AdminFoodMenu = () => {
-  const [foodCategories, setFoodCategories] = useState<FoodCategory[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+export const AdminFoodMenu = ({
+  foodCategories,
+  isOpen,
+  setIsOpen,
+  selectedCategoryId,
+}: {
+  foodCategories: FoodCategory[];
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedCategoryId: string | null;
+}) => {
+  const sortedCategories = [...foodCategories];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate`
-        );
-        const data: FoodCategory[] = await response.json();
-        setFoodCategories(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [isOpen]);
+  if (selectedCategoryId) {
+    const index = sortedCategories.findIndex(
+      (cat) => cat._id === selectedCategoryId
+    );
+    if (index !== -1) {
+      const [selected] = sortedCategories.splice(index, 1);
+      sortedCategories.unshift(selected);
+    }
+  }
 
   return (
     <div>
-      {foodCategories.length > 0 ? (
-        foodCategories.map((category) => {
-          return (
-            <div
-              key={category._id}
-              className="p-5  rounded-xl bg-white flex flex-col gap-4"
-            >
-              <h1 className="text-xl font-semibold">
-                {category.categoryName} ({category.foods.length})
-              </h1>
-              <div className="flex flex-wrap gap-4">
-                <AdminAddFood
-                  isOpen={isOpen}
-                  setIsOpen={setIsOpen}
-                  categoryName={category.categoryName}
-                  categoryId={category._id}
-                />
-                {category.foods.map((food) => {
-                  return (
-                    <AdminFoodCard
-                      isOpen={isOpen}
-                      setIsOpen={setIsOpen}
-                      key={food._id}
-                      cardData={food}
-                      categoryName={category.categoryName}
-                      categoryId={category._id}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <p>Loading categories...</p>
-      )}
+      {sortedCategories.map((category) => (
+        <div
+          key={category._id}
+          className="p-5 rounded-xl bg-white flex flex-col gap-4"
+        >
+          <h1 className="text-xl font-semibold">
+            {category.categoryName} ({category.foods.length})
+          </h1>
+          <div className="flex flex-wrap gap-4">
+            <AdminAddFood
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              categoryName={category.categoryName}
+              categoryId={category._id}
+            />
+            {category.foods.map((food) => (
+              <AdminFoodCard
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                key={food._id}
+                cardData={food}
+                categoryName={category.categoryName}
+                categoryId={category._id}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
