@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Categories } from "./Categories";
+import { Foodcontainer } from "./FoodContainer";
 
 interface FoodItem {
   _id: string;
@@ -19,16 +20,18 @@ interface FoodCategory {
 
 export const CategoriesContainer = () => {
   const [foodCategories, setFoodCategories] = useState<FoodCategory[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-categories/test-aggregate`
         );
         const data: FoodCategory[] = await response.json();
         setFoodCategories(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,5 +40,17 @@ export const CategoriesContainer = () => {
     fetchData();
   }, []);
 
-  return <Categories foodCategories={foodCategories} />;
+  return (
+    <>
+      <Categories
+        foodCategories={foodCategories}
+        selectedCategoryId={selectedCategoryId}
+        setSelectedCategoryId={setSelectedCategoryId}
+      />
+      <Foodcontainer
+        foodCategories={foodCategories}
+        selectedCategoryId={selectedCategoryId}
+      />
+    </>
+  );
 };
